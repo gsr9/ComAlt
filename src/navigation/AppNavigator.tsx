@@ -2,6 +2,7 @@ import { createAppContainer, createSwitchNavigator, createStackNavigator } from 
 import HomeScreen from '../screens/HomeScreen';
 import CategoriesScreen from '../screens/CategoriesScreen'
 import CategoryScreen from '../screens/CategoryScreen'
+import SelectModeScreen from '../screens/SelectModeScreen'
 
 export default createAppContainer(
   // createSwitchNavigator({
@@ -11,6 +12,7 @@ export default createAppContainer(
   // })
   createStackNavigator({
     // Login: LoginScreen,
+    SelectMode: SelectModeScreen,
     Home: HomeScreen,
     Categories: CategoriesScreen,
     Category: CategoryScreen

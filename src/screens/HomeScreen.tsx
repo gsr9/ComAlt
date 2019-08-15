@@ -119,7 +119,8 @@ interface IProps {
     let array = []
     arrayPictos.forEach((item) => {
       array.push(
-        <TouchableHighlight key={item.text} onPress={() => this.addWord(item)} style={styles.mainBorder} underlayColor="rgba(200,200,200,0.5)">
+        <TouchableHighlight key={item.text} onPress={() => this.addWord(item)} style={styles.mainBorder} underlayColor="rgba(200,200,200,0.5)"
+        onLongPress={() => item.text === 'No' ? this.props.navigation.navigate('SelectMode') : ''}>
           <View>
             <View style={styles.picto}>
               <Image source={item.img} style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }} />
