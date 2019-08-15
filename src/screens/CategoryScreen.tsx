@@ -11,19 +11,16 @@ import {
 
 import { Audio } from 'expo-av';
 
-import { initialize, addPressPicto, clearTopBarText, removeLastPicto } from './../actions/index'
+import { addPressPicto, clearTopBarText, removeLastPicto } from '../actions/index'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Pictogram } from '../models/pictogram'
-
+import { Pictogram } from '../models/pictogram';
+import rightCategory from '../../assets/rightCategory'
 
 interface IState {
   pictos: Pictogram[],
-  leftPictos: Pictogram[],
-  rightPictos: Pictogram[],
-  categories: Pictogram[],
   topBarText: Pictogram[],
-  mostUsed: Pictogram[]
+  shownPictos: Pictogram[]
 }
 interface IProps {
   navigation: any,
@@ -33,29 +30,51 @@ interface IProps {
   removeLastPicto: Function
 }
 
-
-/*export default*/ class HomeScreen extends React.Component<IProps, IState> {
+class CategoryScreen extends React.Component<IProps, IState> {
 
   static navigationOptions: { header: any, gesturesEnabled: boolean };
 
-  constructor(props: any) {
-    super(props);
-    this.state = this.props.pictos;
+  page = 1;
+
+  pictosByCategory: Pictogram[];
+
+  constructor(props) {
+    super(props)
+    const parameters = props.navigation.state.params;
+    this.pictosByCategory = this.props.pictos.pictos.filter(picto => picto.category === parameters.category)
+    this.state = {
+      pictos: this.props.pictos.pictos,
+      topBarText: this.props.pictos.topBarText,
+      shownPictos: this.pictosByCategory.slice(0 + (this.page - 1), 12 * this.page)
+    }
+
   }
 
-  addWord = async (picto) => {
 
-    if (picto.text === 'Categorías') {
+  onPressPicto = async (picto) => {
+    if (picto.text === 'Volver') {
       this.props.navigation.navigate('Categories', this.state)
       return
     }
-
+    if (picto.text === 'Siguiente') {
+      if (this.page < this.pictosByCategory.length / 12) {
+        this.page++;
+        this.setState({ shownPictos: this.pictosByCategory.slice(12 * (this.page - 1), 12 * this.page) });
+      }
+      return
+    }
+    if (picto.text === 'Anterior') {
+      if (this.page > 1) {
+        this.page--;
+        this.setState({ shownPictos: this.pictosByCategory.slice(12 * (this.page - 1), 12 * this.page) });
+      }
+      return
+    }
     this.props.addPressPicto(picto)
     let actualPicto = this.props.pictos.pictos.find((item: Pictogram) => item.text === picto.text)
     if (actualPicto && actualPicto.timesUsed) {
       actualPicto.timesUsed += 1;
     }
-
     this.setState(this.props.pictos)
     const soundObject = new Audio.Sound();
     try {
@@ -99,8 +118,6 @@ interface IProps {
             await this.shortAsync(sound.playableDurationMillis / 1.75)
           }
         })
-
-        // Your sound is playing!
       } catch (error) {
         // An error occurred!
         console.log("Error al reproducir")
@@ -108,6 +125,7 @@ interface IProps {
     }
 
   }
+
 
   shortAsync = (time) => {
     return new Promise(resolve => setTimeout(() => {
@@ -119,7 +137,7 @@ interface IProps {
     let array = []
     arrayPictos.forEach((item) => {
       array.push(
-        <TouchableHighlight key={item.text} onPress={() => this.addWord(item)} style={styles.mainBorder} underlayColor="rgba(200,200,200,0.5)">
+        <TouchableHighlight key={item.text} onPress={() => this.onPressPicto(item)} style={styles.mainBorder} underlayColor="rgba(200,200,200,0.5)">
           <View>
             <View style={styles.picto}>
               <Image source={item.img} style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }} />
@@ -132,16 +150,9 @@ interface IProps {
     return array;
   }
 
-  mostUsedPictos = () => {
-
-    let array = this.state.pictos.sort((a, b) => Math.round((b.timesUsed - a.timesUsed) / a.timesUsed))
-    array = array.slice(0, 9)
-    return array;
-  }
-
   render() {
     return (
-      <View style={{ display: 'flex', backgroundColor: '#CBE1EF' }}>
+      <View style={{ flex: 1, backgroundColor: '#CBE1EF', justifyContent: 'center' }}>
         {/* Header */}
         <View style={{ height: '15%', display: 'flex', justifyContent: 'center' }}>
           {/* Top bar */}
@@ -171,18 +182,14 @@ interface IProps {
           </View>
         </View>
         {/* Body */}
-        <View style={{ display: 'flex', flexDirection: 'row', height: '85%' }}>
-          {/* Main left Picto options */}
-          <View style={[styles.container]}>
-            {this.loadPictos(this.state.leftPictos)}
-          </View>
+        <View style={{ display: 'flex', flexDirection: 'row', height: '85%', paddingLeft: '0.5%' }}>
           {/* Main Picto actions */}
           <View style={[styles.centerPicto]}>
-            {this.loadPictos(this.mostUsedPictos())}
+            {this.loadPictos(this.state.shownPictos)}
           </View>
           {/* Main right Picto options */}
           <View style={[styles.container]}>
-            {this.loadPictos(this.state.rightPictos)}
+            {this.loadPictos(rightCategory)}
           </View>
         </View>
       </View>
@@ -191,9 +198,9 @@ interface IProps {
 }
 
 
-HomeScreen.navigationOptions = {
+CategoryScreen.navigationOptions = {
   header: null,
-  gesturesEnabled: false
+  gesturesEnabled: true
 };
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
@@ -204,7 +211,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   picto: {
     width: deviceWidth / 5.4,// (Dimensions.get('window').scale + 3.3),
@@ -219,24 +226,22 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 3,
     margin: 1,
-    paddingRight: 1
+    paddingRight: 1,
+    maxHeight: '33%'
   },
   pictoText: {
     textAlign: 'center',
     fontWeight: '600',
     fontSize: 20,
     backgroundColor: 'white',
-    width: deviceWidth / 5.4
+    width: deviceWidth / 5.4,
   },
   centerPicto: {
-    flex: 1,
     flexWrap: 'wrap',
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
+    flex: 1,
   }
 });
-
 
 const mapStateToProps = (state) => {
   const { pictos } = state
@@ -245,11 +250,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
-    initialize,
     addPressPicto,
     clearTopBarText,
     removeLastPicto
   }, dispatch)
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryScreen);

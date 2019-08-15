@@ -30,7 +30,7 @@ interface IProps {
 
 class CategoriesScreen extends React.Component<IProps, IState> {
 
-  static navigationOptions: { header: any; };
+  static navigationOptions: { header: any, gesturesEnabled: boolean };
 
   constructor(props) {
     super(props)
@@ -43,7 +43,7 @@ class CategoriesScreen extends React.Component<IProps, IState> {
   activatePicto = async (picto) => {
 
     if (picto.text === 'Volver') {
-      this.props.navigation.navigate('Home')
+      this.props.navigation.navigate('Home', this.state)
       return
     }
     const soundObject = new Audio.Sound();
@@ -51,7 +51,7 @@ class CategoriesScreen extends React.Component<IProps, IState> {
       await soundObject.loadAsync(picto.sound);
       await soundObject.playAsync();
       // Your sound is playing!
-      this.props.navigation.navigate('SelectedCategory', { category: picto.text, state: this.state })
+      this.props.navigation.navigate('Category', { category: picto.text })
 
     } catch (error) {
       // An error occurred!
@@ -103,6 +103,22 @@ class CategoriesScreen extends React.Component<IProps, IState> {
     }, time));
   }
 
+  loadPictos = (arrayPictos) => {
+    let array = []
+    arrayPictos.forEach((item) => {
+      array.push(
+        <TouchableHighlight key={item.text} onPress={() => this.activatePicto(item)} style={styles.mainBorder} underlayColor="rgba(200,200,200,0.5)">
+          <View>
+            <View style={styles.picto}>
+              <Image source={item.img} style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }} />
+            </View>
+            <Text style={styles.pictoText} >{item.text}</Text>
+          </View>
+        </TouchableHighlight>
+      );
+    })
+    return array;
+  }
 
   render() {
     return (
@@ -139,15 +155,15 @@ class CategoriesScreen extends React.Component<IProps, IState> {
         <View style={{ display: 'flex', flexDirection: 'row', height: '85%' }}>
           {/* Main left Picto options */}
           <View style={[styles.container]}>
-            {loadPictos(this.state.categories.slice(0, 3))}
+            {this.loadPictos(this.state.categories.slice(0, 3))}
           </View>
           {/* Main Picto actions */}
           <View style={[styles.centerPicto]}>
-            {loadPictos(this.state.categories.slice(3, 12))}
+            {this.loadPictos(this.state.categories.slice(3, 12))}
           </View>
           {/* Main right Picto options */}
           <View style={[styles.container]}>
-            {loadPictos(this.state.categories.slice(12, 15))}
+            {this.loadPictos(this.state.categories.slice(12, 15))}
           </View>
         </View>
       </View>
@@ -156,35 +172,16 @@ class CategoriesScreen extends React.Component<IProps, IState> {
 }
 
 
-
-function shortAsync(time) {
-  return new Promise(resolve => setTimeout(() => {
-    resolve();
-  }, time - 150));
-}
-
-function loadPictos(arrayPictos) {
-  let array = []
-  arrayPictos.forEach((item) => {
-    array.push(
-      <TouchableHighlight key={item.text} onPress={() => this.activatePicto(item)} style={styles.mainBorder} underlayColor="rgba(200,200,200,0.5)">
-        <View>
-          <Image source={item.img} style={styles.picto} />
-          <Text style={styles.pictoText} >{item.text}</Text>
-        </View>
-      </TouchableHighlight>
-    );
-  })
-  return array;
-}
-
-
 CategoriesScreen.navigationOptions = {
-  header: null
+  header: null,
+  gesturesEnabled: false
 };
+
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 const rem = deviceWidth / 64;
+const heightCoef = deviceHeight < 400 ? 0.65 : 0.85
+
 
 const styles = StyleSheet.create({
   container: {
@@ -193,8 +190,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   picto: {
-    width: deviceWidth / (Dimensions.get('window').scale + 3.3),
-    height: deviceHeight / (Dimensions.get('window').scale + 2.3),
+    width: deviceWidth / 5.4,// (Dimensions.get('window').scale + 3.3),
+    height: (deviceHeight / 3.6) * heightCoef,
+    backgroundColor: 'white'
   },
   actionBtns: {
     height: deviceHeight / 12,
@@ -210,7 +208,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '600',
     fontSize: 20,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    width: deviceWidth / 5.4
   },
   centerPicto: {
     flex: 1,

@@ -534,182 +534,182 @@ const pictograms = [
     text: 'A',
     img: require('./images/pictos/abecedario/A.png'),
     sound: require('./sounds/abecedario/A.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'B',
     img: require('./images/pictos/abecedario/B.png'),
     sound: require('./sounds/abecedario/B.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'C',
     img: require('./images/pictos/abecedario/C.png'),
     sound: require('./sounds/abecedario/C.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'D',
     img: require('./images/pictos/abecedario/D.png'),
     sound: require('./sounds/abecedario/D.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'E',
     img: require('./images/pictos/abecedario/E.png'),
     sound: require('./sounds/abecedario/E.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'F',
     img: require('./images/pictos/abecedario/F.png'),
     sound: require('./sounds/abecedario/F.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'G',
     img: require('./images/pictos/abecedario/G.png'),
     sound: require('./sounds/abecedario/G.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'H',
     img: require('./images/pictos/abecedario/H.png'),
     sound: require('./sounds/abecedario/H.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'I',
     img: require('./images/pictos/abecedario/I.png'),
     sound: require('./sounds/abecedario/I.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'J',
     img: require('./images/pictos/abecedario/J.png'),
     sound: require('./sounds/abecedario/J.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'K',
     img: require('./images/pictos/abecedario/K.png'),
     sound: require('./sounds/abecedario/K.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'L',
     img: require('./images/pictos/abecedario/L.png'),
     sound: require('./sounds/abecedario/L.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'M',
     img: require('./images/pictos/abecedario/M.png'),
     sound: require('./sounds/abecedario/M.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'N',
     img: require('./images/pictos/abecedario/N.png'),
     sound: require('./sounds/abecedario/N.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'O',
     img: require('./images/pictos/abecedario/O.png'),
     sound: require('./sounds/abecedario/O.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'P',
     img: require('./images/pictos/abecedario/P.png'),
     sound: require('./sounds/abecedario/P.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'Q',
     img: require('./images/pictos/abecedario/Q.png'),
     sound: require('./sounds/abecedario/Q.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'R',
     img: require('./images/pictos/abecedario/R.png'),
     sound: require('./sounds/abecedario/R.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'S',
     img: require('./images/pictos/abecedario/S.png'),
     sound: require('./sounds/abecedario/S.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'T',
     img: require('./images/pictos/abecedario/T.png'),
     sound: require('./sounds/abecedario/T.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'U',
     img: require('./images/pictos/abecedario/U.png'),
     sound: require('./sounds/abecedario/U.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'V',
     img: require('./images/pictos/abecedario/V.png'),
     sound: require('./sounds/abecedario/V.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'W',
     img: require('./images/pictos/abecedario/W.png'),
     sound: require('./sounds/abecedario/W.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'X',
     img: require('./images/pictos/abecedario/X.png'),
     sound: require('./sounds/abecedario/X.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'Y',
     img: require('./images/pictos/abecedario/Y.png'),
     sound: require('./sounds/abecedario/Y.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   {
     text: 'Z',
     img: require('./images/pictos/abecedario/Z.png'),
     sound: require('./sounds/abecedario/Z.mp3'),
-    category: 'Números',
+    category: 'Abecedario',
     timesUsed: 0
   },
   // Enfermedades

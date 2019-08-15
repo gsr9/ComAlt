@@ -1,6 +1,7 @@
 import { createAppContainer, createSwitchNavigator, createStackNavigator } from 'react-navigation';
 import HomeScreen from '../screens/HomeScreen';
 import CategoriesScreen from '../screens/CategoriesScreen'
+import CategoryScreen from '../screens/CategoryScreen'
 
 export default createAppContainer(
   // createSwitchNavigator({
@@ -11,8 +12,8 @@ export default createAppContainer(
   createStackNavigator({
     // Login: LoginScreen,
     Home: HomeScreen,
-    Categories: CategoriesScreen
-    // SelectedCategory: SelectedCategoryScreen
+    Categories: CategoriesScreen,
+    Category: CategoryScreen
     // Settings: SettingsScreen
   })
 );
