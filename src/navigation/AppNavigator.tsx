@@ -3,6 +3,7 @@ import HomeScreen from '../screens/HomeScreen';
 import CategoriesScreen from '../screens/CategoriesScreen'
 import CategoryScreen from '../screens/CategoryScreen'
 import SelectModeScreen from '../screens/SelectModeScreen'
+import EditionMainScreen from '../screens/EditionMainScreen';
 
 export default createAppContainer(
   // createSwitchNavigator({
@@ -15,7 +16,7 @@ export default createAppContainer(
     SelectMode: SelectModeScreen,
     Home: HomeScreen,
     Categories: CategoriesScreen,
-    Category: CategoryScreen
-    // Settings: SettingsScreen
+    Category: CategoryScreen,
+    EditionMain: EditionMainScreen
   })
 );
