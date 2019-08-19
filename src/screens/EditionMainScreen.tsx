@@ -19,7 +19,7 @@ import { initialize, addPressPicto, clearTopBarText, removeLastPicto } from './.
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Pictogram } from '../models/pictogram'
-import { EditDetail } from '../components/EditDetail';
+import EditDetail from '../components/EditDetail';
 
 
 interface IState {
@@ -149,7 +149,7 @@ class EditionMainScreen extends React.Component<IProps, IState> {
           <View style={[styles.container]}>
             {this.loadPictos(this.state.rightPictos)}
           </View>
-          <EditDetail visible={this.state.modalVisible} setVisibility={this.setModalVisible}>{this.state.selectedPicto}</EditDetail>
+          <EditDetail visible={this.state.modalVisible} setVisibility={this.setModalVisible} picto={this.state.selectedPicto}></EditDetail>
         </View>
       </View>
     );
