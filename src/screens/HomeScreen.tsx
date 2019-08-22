@@ -40,7 +40,14 @@ interface IProps {
 
   constructor(props: any) {
     super(props);
-    this.state = this.props.pictos;
+    this.state = {
+      pictos: this.props.pictos.pictos,
+      leftPictos: this.props.pictos.leftPictos,
+      rightPictos: this.props.pictos.rightPictos,
+      categories: this.props.pictos.categories,
+      mostUsed: this.props.pictos.mostUsed,
+      topBarText: this.props.pictos.topBarText
+    }
   }
 
   addWord = async (picto) => {
@@ -81,7 +88,7 @@ interface IProps {
   getTextFromArray = () => {
     let texto = ""
 
-    let topBarText = this.state.topBarText;
+    let topBarText = this.props.pictos.topBarText;
     if (topBarText.length !== 0) {
       texto = topBarText.map((item: any) => item.text).reduce((previous, current) => previous + " " + current.toLowerCase())
     }

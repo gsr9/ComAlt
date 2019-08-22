@@ -15,7 +15,9 @@ import { Pictogram } from '../models/pictogram'
 interface IProps {
     visible: boolean,
     onClose: Function,
-    optionSelected: Function
+    optionSelected: Function,
+    textOpt1: string,
+    textOpt2: string
 }
 
 interface IState {
@@ -36,8 +38,8 @@ export default class EditBottomModal extends React.Component<IProps, IState> {
             <Modal visible={this.props.visible} transparent={true}>
                 <View style={{ height: '100%', justifyContent: 'flex-end' }}>
                     <View style={{ height: '30%', backgroundColor: 'lightblue' }}>
-                        <Button onPress={() => this.props.optionSelected('gallery')} title='Elegir foto de la galería'></Button>
-                        <Button onPress={() => this.props.optionSelected('camera')} title='Tomar una nueva foto'></Button>
+                        <Button onPress={() => this.props.optionSelected('opt1')} title={this.props.textOpt1}></Button>
+                        <Button onPress={() => this.props.optionSelected('opt2')} title={this.props.textOpt2}></Button>
                         <Button onPress={() => this.props.onClose()} title='Cerrar modal'></Button>
                     </View>
                 </View>

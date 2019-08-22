@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux';
 
+import { AsyncStorage } from 'react-native'
+
 import leftPictos from '../../assets/leftOptions'
 import rightPictos from '../../assets/rightOptions'
 import pictograms from '../../assets/allPictograms'
 import categories from '../../assets/categories'
 
-const initialState = {
+let initialState = {
     pictos: pictograms,
     leftPictos: leftPictos,
     rightPictos: rightPictos,
@@ -14,8 +16,31 @@ const initialState = {
     error: false
 }
 
+const retrieveData = async () => {
+    try {
+        const value = await AsyncStorage.getItem('state');
+        if (value !== null) {
+            // Our data is fetched successfully
+            const result = JSON.parse(value);
+            return result
+        }
+    } catch (error) {
+        // Error retrieving data
+        console.log('ERROR RETRIEVING STORED DATA')
+    }
+}
+
+retrieveData().then(storedData => {
+    if (storedData !== undefined) {
+        initialState.pictos = storedData.pictos
+        initialState.leftPictos = storedData.leftPictos
+        initialState.rightPictos = storedData.rightPictos
+        initialState.categories = storedData.categories
+    }
+})
 
 const dataReducer = (state = initialState, action) => {
+
     switch (action.type) {
         case 'INITIALIZING':
             return {
@@ -31,6 +56,8 @@ const dataReducer = (state = initialState, action) => {
         case 'REMOVE_LAST':
             state.topBarText.splice(state.topBarText.length - 1, 1)
             return state;
+        case 'RESET':
+            AsyncStorage.clear()
         default:
             return state
     }

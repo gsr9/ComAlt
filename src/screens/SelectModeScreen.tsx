@@ -36,13 +36,14 @@ export default class SelectModeScreen extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
         this.state = this.props.pictos;
-        this.requestCameraPermission()
+        this.requestPermissions()
     }
 
-    requestCameraPermission = async () => {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
-
-            console.log(status)
+    requestPermissions = async () => {
+            const { status } = await Permissions.askAsync(
+                Permissions.CAMERA_ROLL,
+                Permissions.CAMERA,
+                Permissions.AUDIO_RECORDING);
         }
 
     render() {

@@ -7,10 +7,7 @@ import {
   Text,
   Dimensions,
   TouchableHighlight,
-  Button,
-  Picker,
-  Alert,
-  Modal
+  AsyncStorage
 } from 'react-native';
 
 import { Audio } from 'expo-av';
@@ -124,7 +121,7 @@ class EditionMainScreen extends React.Component<IProps, IState> {
                 <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 1.5 * rem }}>Añadir</Text>
               </View>
             </TouchableHighlight>
-            <TouchableHighlight style={{ marginRight: 10 }} onPress={() => this.props.navigation.navigate('SelectMode')}>
+            <TouchableHighlight style={{ marginRight: 10 }} onPress={ () => this.closeEditMode()}>
               <View style={{
                 borderColor: 'red', borderWidth: 2, alignItems: 'center',
                 justifyContent: 'center', borderRadius: 15, height: 3 * rem, width: 9 * rem
@@ -149,10 +146,20 @@ class EditionMainScreen extends React.Component<IProps, IState> {
           <View style={[styles.container]}>
             {this.loadPictos(this.state.rightPictos)}
           </View>
-          <EditDetail visible={this.state.modalVisible} setVisibility={this.setModalVisible} picto={this.state.selectedPicto}></EditDetail>
+          <EditDetail isBottomModalVisible={this.state.modalVisible} setVisibility={this.setModalVisible} picto={this.state.selectedPicto}></EditDetail>
         </View>
       </View>
     );
+  }
+  closeEditMode = async () =>  {
+      try {
+          await AsyncStorage.setItem('state', JSON.stringify(this.state));
+      } catch (error) {
+          // Error saving data
+          console.log('ERROR SAVING STATE')
+      }
+
+    this.props.navigation.navigate('SelectMode')
   }
 }
 

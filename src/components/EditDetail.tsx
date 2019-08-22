@@ -14,22 +14,31 @@ import {
 } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
+import { Audio } from 'expo-av';
+
 import { Pictogram } from '../models/pictogram';
 
 import EditBottomModal from './EditBottomModal'
+import { TextInput } from 'react-native-gesture-handler';
 
 var picto
 var bottomModalVisible = false;
 
 interface IProps {
-    visible: boolean,
+    isBottomModalVisible: boolean,
     setVisibility: Function,
     picto: Pictogram
 }
 
 interface IState {
-    visible: boolean,
-    // picto: Pictogram
+    isBottomModalVisible: boolean,
+    isTextModalVisible: boolean,
+    // picto: Pictogram,
+    textOpt1: string,
+    textOpt2: string,
+    bottomModalFunc: Function,
+    newText: string
 }
 
 export default class EditDetail extends React.Component<IProps, IState> {
@@ -37,23 +46,26 @@ export default class EditDetail extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props)
         this.state = {
-            visible: false,
+            isBottomModalVisible: false,
+            isTextModalVisible: false,
+            textOpt1: '',
+            textOpt2: '',
+            bottomModalFunc: null,
+            newText: ''
             // picto: new Pictogram()
         }
     }
 
-    trial = (option) => {
-        console.log('SELECCION MODAL:', option)
+    imageOption = (opt) => {
         const options = {
             mediaTypes: ImagePicker.MediaTypeOptions.Images
         }
-        if (option === 'gallery') {
+        if (opt === 'opt1') {
             ImagePicker.launchImageLibraryAsync(options).then(
                 result => {
                     if (result.cancelled === false) {
                         this.props.picto.img = { uri: result.uri }
-                        console.log('NUEVO PICTO', picto)
-                        this.setState({ visible: false })
+                        this.setState({ isBottomModalVisible: false })
                     }
                 }
             )
@@ -62,24 +74,79 @@ export default class EditDetail extends React.Component<IProps, IState> {
                 result => {
                     if (result.cancelled === false) {
                         this.props.picto.img = { uri: result.uri }
-                        console.log('NUEVO PICTO', picto)
-                        this.setState({ visible: false })
+                        this.setState({ isBottomModalVisible: false })
                     }
                 }
             )
         }
-
-        
     }
 
-    imageOptions = () => {
-        this.setState({ visible: true })
+    audioOption = async (opt) => {
+        console.log('La opción elegida para audio es ' + opt)
+        const options = {
+            type: 'audio/*'
+        }
+        if (opt === 'opt1') {
+            DocumentPicker.getDocumentAsync(options).then(
+                result => {
+                    if (result.type === 'success') {
+                        this.props.picto.sound = { uri: result.uri }
+                        this.setState({ isBottomModalVisible: false })
+                    }
+                }
+            )
+        } else {
+            const recording = new Audio.Recording();
+
+            try {
+                //recording.setOnRecordingStatusUpdate(props.recordingCallback);
+                recording.setProgressUpdateInterval(200);
+
+                //props.setState({ fileUrl: null });
+
+                await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+                await recording.startAsync();
+                recording.setOnRecordingStatusUpdate((recStatus) => console.log(recStatus));
+
+                //props.setState({ recording });
+            } catch (error) {
+                console.log(error) // eslint-disable-line
+            }
+            //  finally {
+            //     console.log(recording)
+            // }
+        }
+
+    }
+
+    openBottomModal = (type) => {
+        let textOpt1, textOpt2: string;
+        let funct: Function;
+        if (type === 'image') {
+            textOpt1 = 'Seleccionar una imagen de la galería'
+            textOpt2 = 'Tomar una foto con la cámara'
+            funct = this.imageOption
+        } else {
+            textOpt1 = 'Seleccionar un archivo de audio de mis archivos'
+            textOpt2 = 'Grabar un audio ahora'
+            funct = this.audioOption
+        }
+        this.setState({
+            isBottomModalVisible: true,
+            textOpt1: textOpt1,
+            textOpt2: textOpt2,
+            bottomModalFunc: funct
+        })
         return
 
     }
 
-    onCloseModal = () => {
-        this.setState({ visible: !this.state.visible })
+    closeBottomModal = () => { // toggle bottom modal ?
+        this.setState({ isBottomModalVisible: !this.state.isBottomModalVisible })
+    }
+
+    toggleTextModal = () => {
+        this.setState({ isTextModalVisible: !this.state.isTextModalVisible })
     }
 
     render() {
@@ -87,10 +154,8 @@ export default class EditDetail extends React.Component<IProps, IState> {
             <Modal
                 animationType='slide'
                 transparent={false}
-                visible={this.props.visible}
-                onRequestClose={() => {
-                    console.log('Cerrando el modal')
-                }}>
+                visible={this.props.isBottomModalVisible}
+                >
                 <View style={{ margin: 20 }}>
                     <View style={{ backgroundColor: 'red', height: '100%', display: 'flex', flexDirection: 'row' }}>
                         <View>
@@ -106,13 +171,13 @@ export default class EditDetail extends React.Component<IProps, IState> {
                         </View>
                         <View style={{ backgroundColor: 'yellow', flex: 1, marginLeft: 10, flexDirection: 'row' }}>
                             <View style={{ backgroundColor: 'blue', width: '85%' }}>
-                                <TouchableHighlight style={styles.optionButton} onPress={() => this.imageOptions()}>
+                                <TouchableHighlight style={styles.optionButton} onPress={() => this.openBottomModal('image')}>
                                     <Text style={styles.optionBtnText}> Cambiar imagen </Text>
                                 </TouchableHighlight>
-                                <TouchableHighlight style={styles.optionButton}>
+                                <TouchableHighlight style={styles.optionButton} onPress={() => this.toggleTextModal()}>
                                     <Text style={styles.optionBtnText}> Cambiar texto </Text>
                                 </TouchableHighlight>
-                                <TouchableHighlight style={styles.optionButton}>
+                                <TouchableHighlight style={styles.optionButton} onPress={() => this.openBottomModal('audio')}>
                                     <Text style={styles.optionBtnText}> Cambiar sonido </Text>
                                 </TouchableHighlight>
                                 <TouchableHighlight style={styles.optionButton}>
@@ -122,13 +187,37 @@ export default class EditDetail extends React.Component<IProps, IState> {
                             <TouchableHighlight
                                 style={{ marginLeft: 'auto', marginRight: 10 }}
                                 onPress={() => {
-                                    this.props.setVisibility(!this.props.visible);
+                                    this.props.setVisibility(!this.props.isBottomModalVisible);
                                 }}>
-                                <Text style={styles.pictoText}>Hide Modal</Text>
+                                <Text style={styles.pictoText}>Cerrar</Text>
                             </TouchableHighlight>
                         </View>
                     </View>
-                    <EditBottomModal visible={this.state.visible} onClose={this.onCloseModal} optionSelected={this.trial}></EditBottomModal>
+                    <EditBottomModal
+                        visible={this.state.isBottomModalVisible}
+                        onClose={this.closeBottomModal}
+                        optionSelected={this.state.bottomModalFunc}
+                        textOpt1={this.state.textOpt1}
+                        textOpt2={this.state.textOpt2}>
+                    </EditBottomModal>
+                    <Modal transparent={true} visible={this.state.isTextModalVisible}>
+                        <View style={{ height: '100%', alignItems: 'center'}}>
+                            <View style={{ height: '30%', width: '80%', marginTop: '10%', backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+                                <View style={{padding:15}}>
+                                    <Text style={{fontSize:24, marginBottom: 15}}>Introducir el nuevo texto</Text>
+                                    <TextInput style={{fontSize:24, flex: 0.5, borderBottomColor: 'grey', borderBottomWidth:1}}
+                                        autoFocus={true}
+                                        onChangeText={ (newText) => this.setState({newText})}
+                                        placeholder={this.props.picto.text}
+                                        ></TextInput>
+                                </View>
+                                <View style={{flexDirection:'row', alignContent: 'space-between'}}>
+                                    <Button onPress={this.toggleTextModal} title='Cancelar'></Button>
+                                    <Button onPress={() => {this.props.picto.text = this.state.newText; this.toggleTextModal()}} title='Cambiar texto'></Button>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
                 </View>
             </Modal>
         )
