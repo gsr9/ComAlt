@@ -58,6 +58,14 @@ const dataReducer = (state = initialState, action) => {
             return state;
         case 'RESET':
             AsyncStorage.clear()
+            state = {
+                pictos: pictograms,
+                leftPictos: leftPictos,
+                rightPictos: rightPictos,
+                categories: categories,
+                topBarText: [],
+                error: false
+            }
         default:
             return state
     }

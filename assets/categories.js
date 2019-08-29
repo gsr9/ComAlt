@@ -68,10 +68,6 @@ const categories = [
     text: 'Enfermedades',
     img: require('./images/pictos/categories/enfermedades.png'),
     sound: require('./sounds/categories/enfermedades.mp3')
-  },
-  {
-    text: 'Volver',
-    img: require('./images/pictos/categories/volver.png'),
   }
 ]
 

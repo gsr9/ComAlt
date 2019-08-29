@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    ScrollView,
     StyleSheet,
     View,
     Image,
@@ -8,9 +7,9 @@ import {
     Dimensions,
     TouchableHighlight,
     Button,
+    Modal,
     Picker,
-    Alert,
-    Modal
+    Alert
 } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
@@ -22,23 +21,26 @@ import { Pictogram } from '../models/pictogram';
 import EditBottomModal from './EditBottomModal'
 import { TextInput } from 'react-native-gesture-handler';
 
-var picto
-var bottomModalVisible = false;
-
 interface IProps {
     isBottomModalVisible: boolean,
     setVisibility: Function,
-    picto: Pictogram
+    picto: Pictogram,
+    categories: any,
+    allPictos: Pictogram[],
+    leftPictos?: Pictogram[],
+    rightPictos?: Pictogram[]
 }
 
 interface IState {
     isBottomModalVisible: boolean,
     isTextModalVisible: boolean,
-    // picto: Pictogram,
+    picto: Pictogram,
     textOpt1: string,
     textOpt2: string,
     bottomModalFunc: Function,
-    newText: string
+    newText: string,
+    leftPictos: Pictogram[],
+    rightPictos: Pictogram[]
 }
 
 export default class EditDetail extends React.Component<IProps, IState> {
@@ -51,8 +53,10 @@ export default class EditDetail extends React.Component<IProps, IState> {
             textOpt1: '',
             textOpt2: '',
             bottomModalFunc: null,
-            newText: ''
-            // picto: new Pictogram()
+            newText: '',
+            picto: this.props.picto,
+            leftPictos: this.props.leftPictos || [],
+            rightPictos: this.props.rightPictos || []
         }
     }
 
@@ -155,9 +159,9 @@ export default class EditDetail extends React.Component<IProps, IState> {
                 animationType='slide'
                 transparent={false}
                 visible={this.props.isBottomModalVisible}
-                >
-                <View style={{ margin: 20 }}>
-                    <View style={{ backgroundColor: 'red', height: '100%', display: 'flex', flexDirection: 'row' }}>
+            >
+                <View style={{ padding: 20, backgroundColor: 'azure' }}>
+                    <View style={{ height: '100%', display: 'flex', flexDirection: 'row' }}>
                         <View>
                             <View style={styles.mainBorder}>
                                 <View style={styles.picto}>
@@ -165,12 +169,12 @@ export default class EditDetail extends React.Component<IProps, IState> {
                                 </View>
                                 <Text style={styles.pictoText} numberOfLines={1}>{this.props.picto.text}</Text>
                             </View>
-                            <View style={{ backgroundColor: 'green', flex: 1, marginTop: 10 }}>
+                            <View style={{ flex: 1, marginTop: 10 }}>
 
                             </View>
                         </View>
-                        <View style={{ backgroundColor: 'yellow', flex: 1, marginLeft: 10, flexDirection: 'row' }}>
-                            <View style={{ backgroundColor: 'blue', width: '85%' }}>
+                        <View style={{ flex: 1, marginLeft: 10, flexDirection: 'row' }}>
+                            <View style={{ width: '85%', marginLeft: 10, alignItems: 'center' }}>
                                 <TouchableHighlight style={styles.optionButton} onPress={() => this.openBottomModal('image')}>
                                     <Text style={styles.optionBtnText}> Cambiar imagen </Text>
                                 </TouchableHighlight>
@@ -180,13 +184,38 @@ export default class EditDetail extends React.Component<IProps, IState> {
                                 <TouchableHighlight style={styles.optionButton} onPress={() => this.openBottomModal('audio')}>
                                     <Text style={styles.optionBtnText}> Cambiar sonido </Text>
                                 </TouchableHighlight>
-                                <TouchableHighlight style={styles.optionButton}>
-                                    <Text style={styles.optionBtnText}> Cambiar pictograma </Text>
+                                <View style={this.props.picto.category === undefined ?
+                                    { display: 'none' } :
+                                    { width: '100%', alignItems: 'center' }}>
+                                    <TouchableHighlight style={[styles.optionButton, this.isFixedPicto()]}>
+                                        <Text style={styles.optionBtnText}> Cambiar pictograma </Text>
+                                    </TouchableHighlight>
+                                    <View style={{ display: this.props.picto !== undefined ? 'flex' : 'none', flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                                        <Text style={{ fontSize: 2 * rem, marginRight: '1%' }}>Categoría</Text>
+                                        <Picker
+                                            selectedValue={this.state.picto.category}
+                                            mode='dialog'
+                                            style={{ width: '39%' }}
+                                            onValueChange={(itemValue) => {
+                                                this.props.picto.category = itemValue;
+                                                this.setState({ picto: this.props.picto })
+                                            }
+                                            }>
+                                            {this.props.categories.map(element => {
+                                                return <Picker.Item key={element.text} label={element.text} value={element.text} />
+                                            })}
+                                        </Picker>
+                                    </View>
+                                </View>
+                                <TouchableHighlight style={[styles.optionButton, { backgroundColor: 'lightcoral' }]}
+                                    onPress={() => this.deletePicto()}>
+                                    <Text style={styles.optionBtnText}> Eliminar pictograma </Text>
                                 </TouchableHighlight>
                             </View>
                             <TouchableHighlight
-                                style={{ marginLeft: 'auto', marginRight: 10 }}
+                                style={{ marginLeft: 'auto', marginRight: 10, height: 30 }}
                                 onPress={() => {
+                                    console.log(this.props.picto)
                                     this.props.setVisibility(!this.props.isBottomModalVisible);
                                 }}>
                                 <Text style={styles.pictoText}>Cerrar</Text>
@@ -201,19 +230,19 @@ export default class EditDetail extends React.Component<IProps, IState> {
                         textOpt2={this.state.textOpt2}>
                     </EditBottomModal>
                     <Modal transparent={true} visible={this.state.isTextModalVisible}>
-                        <View style={{ height: '100%', alignItems: 'center'}}>
+                        <View style={{ height: '100%', alignItems: 'center' }}>
                             <View style={{ height: '30%', width: '80%', marginTop: '10%', backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-                                <View style={{padding:15}}>
-                                    <Text style={{fontSize:24, marginBottom: 15}}>Introducir el nuevo texto</Text>
-                                    <TextInput style={{fontSize:24, flex: 0.5, borderBottomColor: 'grey', borderBottomWidth:1}}
+                                <View style={{ padding: 15 }}>
+                                    <Text style={{ fontSize: 24, marginBottom: 15 }}>Introducir el nuevo texto</Text>
+                                    <TextInput style={{ fontSize: 24, flex: 0.5, borderBottomColor: 'grey', borderBottomWidth: 1 }}
                                         autoFocus={true}
-                                        onChangeText={ (newText) => this.setState({newText})}
+                                        onChangeText={(newText) => this.setState({ newText })}
                                         placeholder={this.props.picto.text}
-                                        ></TextInput>
+                                    ></TextInput>
                                 </View>
-                                <View style={{flexDirection:'row', alignContent: 'space-between'}}>
+                                <View style={{ flexDirection: 'row', alignContent: 'space-between' }}>
                                     <Button onPress={this.toggleTextModal} title='Cancelar'></Button>
-                                    <Button onPress={() => {this.props.picto.text = this.state.newText; this.toggleTextModal()}} title='Cambiar texto'></Button>
+                                    <Button onPress={() => this.changeText()} title='Cambiar texto'></Button>
                                 </View>
                             </View>
                         </View>
@@ -221,6 +250,79 @@ export default class EditDetail extends React.Component<IProps, IState> {
                 </View>
             </Modal>
         )
+    }
+    isFixedPicto(): import("react-native").StyleProp<import("react-native").ViewStyle> {
+        let fixedPictos = this.state.leftPictos.concat(this.state.rightPictos)
+        let picto = fixedPictos.find(item => {
+            if(this.props.picto.text === item.text && this.props.picto.img === item.img && this.props.picto.sound === item.sound){
+                return true
+            }
+            return false
+        })
+        console.log('PICTO FIXED?', picto)
+        if (picto !== undefined) {
+            return { display: 'flex' }
+        }
+        return { display: 'none' }
+    }
+    changeText = () => {
+        if (this.state.newText.length < 4) {
+            alert('El texto tiene que contener más de tres caracteres')
+            return
+        }
+        console.log('CATEGORÍA', this.props.picto)
+        if (this.props.picto.category === undefined) {
+            this.props.allPictos.map(item => {
+                if (item.category === this.props.picto.text) {
+                    item.category = this.state.newText
+                }
+            })
+        }
+        this.props.picto.text = this.state.newText
+        this.toggleTextModal()
+    }
+    deletePicto = () => {
+        let index = this.props.allPictos.findIndex(value => value.text === this.props.picto.text)
+        // Confirmar que se quiere eliminar el pictograma
+        if (this.props.picto.category === undefined) {
+            this.deleteCategory()
+            return
+        }
+        Alert.alert(
+            'Eliminar pictograma',
+            '¿Está seguro/a de querer eliminar este pictograma?',
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                    text: 'Eliminar pictograma', onPress: () => {
+                        this.props.allPictos.splice(index, 1)
+                        this.props.setVisibility(!this.props.isBottomModalVisible);
+                    }
+                },
+            ]
+        );
+    }
+
+    deleteCategory = () => {
+        let children = this.props.allPictos.filter(item => item.category === this.props.picto.text)
+        let index = this.props.categories.findIndex(value => value.text === this.props.picto.text)
+        if (children.length > 0) {
+            Alert.alert(
+                'Eliminar categoría',
+                '¿Está seguro/a de querer eliminar esta categoría y todos los pictogramas asociados?',
+                [
+                    { text: 'Cancelar', style: 'cancel' },
+                    {
+                        text: 'Eliminar pictograma', onPress: () => {
+                            this.props.categories.splice(index, 1)
+                            this.props.setVisibility(!this.props.isBottomModalVisible);
+                        }
+                    },
+                ]
+            );
+        } else {
+
+        }
     }
 
 }
@@ -260,10 +362,10 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         padding: 5,
         marginTop: 40,
-        marginLeft: 10,
         width: '60%'
     },
     optionBtnText: {
-        fontSize: 2 * rem
+        fontSize: 2 * rem,
+        textAlign: 'center'
     }
 });

@@ -72,7 +72,8 @@ class CategoryScreen extends React.Component<IProps, IState> {
     }
     this.props.addPressPicto(picto)
     let actualPicto = this.props.pictos.pictos.find((item: Pictogram) => item.text === picto.text)
-    if (actualPicto && actualPicto.timesUsed) {
+    if (actualPicto !== undefined && actualPicto.timesUsed !== undefined) {
+      console.log('ACTUAL PICTO', actualPicto)
       actualPicto.timesUsed += 1;
     }
     this.setState(this.props.pictos)
@@ -210,8 +211,7 @@ const heightCoef = deviceHeight < 400 ? 0.65 : 0.85
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   picto: {
     width: deviceWidth / 5.4,// (Dimensions.get('window').scale + 3.3),

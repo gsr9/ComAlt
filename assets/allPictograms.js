@@ -329,7 +329,7 @@ const pictograms = [
     timesUsed: 0
   },
   {
-    text: 'Clase',
+    text: 'Parque',
     img: require('./images/pictos/lugares/parque.png'),
     sound: require('./sounds/lugares/parque.mp3'),
     category: 'Lugares',

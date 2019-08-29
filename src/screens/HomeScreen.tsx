@@ -40,6 +40,7 @@ interface IProps {
 
   constructor(props: any) {
     super(props);
+    
     this.state = {
       pictos: this.props.pictos.pictos,
       leftPictos: this.props.pictos.leftPictos,
@@ -48,6 +49,9 @@ interface IProps {
       mostUsed: this.props.pictos.mostUsed,
       topBarText: this.props.pictos.topBarText
     }
+  }
+  componentWillUnmount() {
+    console.log('CERRANDO HOMESCREEN')
   }
 
   addWord = async (picto) => {
@@ -59,7 +63,7 @@ interface IProps {
 
     this.props.addPressPicto(picto)
     let actualPicto = this.props.pictos.pictos.find((item: Pictogram) => item.text === picto.text)
-    if (actualPicto && actualPicto.timesUsed) {
+    if (actualPicto !== undefined && actualPicto.timesUsed !== undefined) {
       actualPicto.timesUsed += 1;
     }
 
@@ -126,8 +130,10 @@ interface IProps {
     let array = []
     arrayPictos.forEach((item) => {
       array.push(
-        <TouchableHighlight key={item.text} onPress={() => this.addWord(item)} style={styles.mainBorder} underlayColor="rgba(200,200,200,0.5)"
-        onLongPress={() => item.text === 'No' ? this.props.navigation.navigate('SelectMode') : ''}>
+        <TouchableHighlight key={item.text} onPress={() => this.addWord(item)} 
+          style={[styles.mainBorder, arrayPictos.length < 4 ?  styles.fixedPicto : {}]} underlayColor="rgba(200,200,200,0.5)"
+          onLongPress={() => item.text === 'No' ? this.props.navigation.navigate('SelectMode') : ''}
+        >
           <View>
             <View style={styles.picto}>
               <Image source={item.img} style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }} />
@@ -242,6 +248,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
+  },
+  fixedPicto: {
+    borderColor: 'forestgreen'
   }
 });
 

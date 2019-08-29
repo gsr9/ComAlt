@@ -15,10 +15,13 @@ import { clearTopBarText, removeLastPicto } from '../actions/index'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Pictogram } from '../models/pictogram'
+import rightCategory from '../../assets/rightCategory'
+
 
 interface IState {
   categories: Pictogram[],
-  topBarText: Pictogram[]
+  topBarText: Pictogram[],
+  shownCategories: any[]
 }
 interface IProps {
   navigation: any,
@@ -32,11 +35,14 @@ class CategoriesScreen extends React.Component<IProps, IState> {
 
   static navigationOptions: { header: any, gesturesEnabled: boolean };
 
+  page = 1;
+
   constructor(props) {
     super(props)
     this.state = {
       categories: this.props.pictos.categories,
-      topBarText: this.props.pictos.topBarText
+      topBarText: this.props.pictos.topBarText,
+      shownCategories: this.props.pictos.categories.slice(0 + (this.page - 1), 12 * this.page)
     }
   }
 
@@ -46,16 +52,31 @@ class CategoriesScreen extends React.Component<IProps, IState> {
       this.props.navigation.navigate('Home', this.state)
       return
     }
+    if (picto.text === 'Siguiente') {
+      if (this.page < this.props.pictos.categories.length / 12) {
+        this.page++;
+        this.setState({ shownCategories: this.props.pictos.categories.slice(12 * (this.page - 1), 12 * this.page) });
+      }
+      return
+    }
+    if (picto.text === 'Anterior') {
+      if (this.page > 1) {
+        this.page--;
+        this.setState({ shownCategories: this.props.pictos.categories.slice(12 * (this.page - 1), 12 * this.page) });
+      }
+      return
+    }
     const soundObject = new Audio.Sound();
     try {
       await soundObject.loadAsync(picto.sound);
       await soundObject.playAsync();
       // Your sound is playing!
-      this.props.navigation.navigate('Category', { category: picto.text })
 
     } catch (error) {
       // An error occurred!
       console.log("Error al reproducir")
+    } finally {
+      this.props.navigation.navigate('Category', { category: picto.text })
     }
   }
 
@@ -108,11 +129,11 @@ class CategoriesScreen extends React.Component<IProps, IState> {
     arrayPictos.forEach((item) => {
       array.push(
         <TouchableHighlight key={item.text} onPress={() => this.activatePicto(item)} style={styles.mainBorder} underlayColor="rgba(200,200,200,0.5)">
-          <View>
+          <View style={{backgroundColor: 'white'}}>
             <View style={styles.picto}>
               <Image source={item.img} style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }} />
             </View>
-            <Text style={styles.pictoText} >{item.text}</Text>
+            <Text style={styles.pictoText} numberOfLines={1}>{item.text}</Text>
           </View>
         </TouchableHighlight>
       );
@@ -153,17 +174,13 @@ class CategoriesScreen extends React.Component<IProps, IState> {
         </View>
         {/* Body */}
         <View style={{ display: 'flex', flexDirection: 'row', height: '85%' }}>
-          {/* Main left Picto options */}
-          <View style={[styles.container]}>
-            {this.loadPictos(this.state.categories.slice(0, 3))}
-          </View>
-          {/* Main Picto actions */}
+          {/* Main Categories options */}
           <View style={[styles.centerPicto]}>
-            {this.loadPictos(this.state.categories.slice(3, 12))}
+            {this.loadPictos(this.state.shownCategories)}
           </View>
-          {/* Main right Picto options */}
+          {/* Right Categories options */}
           <View style={[styles.container]}>
-            {this.loadPictos(this.state.categories.slice(12, 15))}
+            {this.loadPictos(rightCategory)}
           </View>
         </View>
       </View>
@@ -182,11 +199,9 @@ const deviceHeight = Dimensions.get('window').height
 const rem = deviceWidth / 64;
 const heightCoef = deviceHeight < 400 ? 0.65 : 0.85
 
-
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center'
   },
   picto: {
@@ -202,21 +217,21 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 3,
     margin: 1,
-    paddingRight: 1
+    // paddingRight: 1,
+    maxHeight: '33%'
   },
   pictoText: {
     textAlign: 'center',
     fontWeight: '600',
     fontSize: 20,
     backgroundColor: 'white',
-    width: deviceWidth / 5.4
+    width: deviceWidth / 5.45
   },
   centerPicto: {
-    flex: 1,
     flexWrap: 'wrap',
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
+    flex: 1,
+    marginLeft: 10
   }
 });
 

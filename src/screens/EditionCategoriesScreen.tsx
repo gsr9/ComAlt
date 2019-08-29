@@ -12,22 +12,20 @@ import {
 
 import { Audio } from 'expo-av';
 
-import { initialize, addPressPicto, clearTopBarText, removeLastPicto } from './../actions/index'
+import { initialize, addPressPicto, clearTopBarText, removeLastPicto } from '../actions/index'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Pictogram } from '../models/pictogram'
 import EditDetail from '../components/EditDetail';
+import rightCategory from '../../assets/rightCategory'
 
 
 interface IState {
   pictos: Pictogram[],
-  leftPictos: Pictogram[],
-  rightPictos: Pictogram[],
   categories: Pictogram[],
-  topBarText: Pictogram[],
-  mostUsed: Pictogram[],
+  shownCategories: any[],
   modalVisible: boolean,
-  selectedPicto: Pictogram
+  selectedCategory: any
 }
 interface IProps {
   navigation: any,
@@ -38,34 +36,74 @@ interface IProps {
 }
 
 
-class EditionMainScreen extends React.Component<IProps, IState> {
+class EditionCategoriesScreen extends React.Component<IProps, IState> {
 
 
   static navigationOptions: { header: any, gesturesEnabled: boolean };
+
+  page = 1;
+
 
   constructor(props: any) {
     super(props);
     this.props.pictos.modalVisible = false;
     this.props.pictos.selectedPicto = new Pictogram();
-    this.state = this.props.pictos;
+    this.state = {
+      categories: this.props.pictos.categories,
+      pictos: this.props.pictos.pictos,
+      shownCategories: this.props.pictos.categories.slice(0 + (this.page - 1), 12 * this.page),
+      modalVisible: false,
+      selectedCategory: new Pictogram()
+    }
+
 
   }
 
-  addItem = () => {
-    console.log('Añadiendo item')
+  activatePicto = async (picto) => {
+
+    if (picto.text === 'Volver') {
+      this.props.navigation.goBack()
+      return
+    }
+    if (picto.text === 'Siguiente') {
+      if (this.page < this.props.pictos.categories.length / 12) {
+        this.page++;
+        this.setState({ shownCategories: this.props.pictos.categories.slice(12 * (this.page - 1), 12 * this.page) });
+      }
+      return
+    }
+    if (picto.text === 'Anterior') {
+      if (this.page > 1) {
+        this.page--;
+        this.setState({ shownCategories: this.props.pictos.categories.slice(12 * (this.page - 1), 12 * this.page) });
+      }
+      return
+    }
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(picto.sound);
+      await soundObject.playAsync();
+      // Your sound is playing!
+
+    } catch (error) {
+      // An error occurred!
+      console.log("Error al reproducir")
+    } finally {
+      this.props.navigation.navigate('EditCategory', { category: picto.text })
+    }
   }
 
   setModalVisible = (visible) => {
     this.setState({ modalVisible: visible });
   }
 
-  editItem = async (picto) => {
+  editCategory = async (category) => {
 
-    if (picto.text === 'Categorías') {
-      this.props.navigation.navigate('EditCategories')
+    if (category.text === 'Volver') {
+      this.props.navigation.goBack()
       return
     }
-    this.setState({ selectedPicto: picto })
+    this.setState({ selectedCategory: category })
 
     this.setModalVisible(true);
   }
@@ -77,14 +115,13 @@ class EditionMainScreen extends React.Component<IProps, IState> {
     }, time));
   }
 
-  loadPictos = (arrayPictos: Pictogram[]) => {
+  loadPictos = (arrayPictos) => {
     let array = []
     arrayPictos.forEach((item) => {
       array.push(
-        <TouchableHighlight key={item.text} onPress={() => this.editItem(item)} 
-          style={[styles.mainBorder, arrayPictos.length < 4 ?  styles.fixedPicto : {}]} underlayColor="rgba(200,200,200,0.5)"
-        >
-          <View>
+        <TouchableHighlight key={item.text} onLongPress={() => this.editCategory(item)}
+          onPress={() => this.activatePicto(item)} style={styles.mainBorder} underlayColor="rgba(200,200,200,0.5)">
+          <View style={{backgroundColor: 'white'}}>
             <View style={styles.picto}>
               <Image source={item.img} style={{ flex: 1, width: null, height: null, resizeMode: 'contain' }} />
             </View>
@@ -96,12 +133,6 @@ class EditionMainScreen extends React.Component<IProps, IState> {
     return array;
   }
 
-  mostUsedPictos = () => {
-
-    let array = this.state.pictos.sort((a, b) => Math.round((b.timesUsed - a.timesUsed) / a.timesUsed))
-    array = array.slice(0, 9)
-    return array;
-  }
 
   render() {
     return (
@@ -111,7 +142,7 @@ class EditionMainScreen extends React.Component<IProps, IState> {
           {/* Top bar */}
           <View style={{ backgroundColor: 'white', height: '80%', display: 'flex', flexDirection: 'row', paddingStart: 2, alignItems: 'center' }}>
             <Text style={{ marginLeft: 15, fontSize: 2.5 * rem, color: 'darkblue', fontWeight: 'bold' }}>Modo Edición</Text>
-            <TouchableHighlight style={{ marginLeft: 'auto', marginRight: 10 }} onPress={() => this.props.navigation.navigate('AddScreen', { additionType: 'picto' })}>
+            {/* <TouchableHighlight style={{ marginLeft: 'auto', marginRight: 10 }} onPress={() => this.props.navigation.navigate('AddScreen', { additionType: 'category' })}>
               <View style={{
                 backgroundColor: 'green', alignItems: 'center',
                 justifyContent: 'center', borderRadius: 15, height: 3 * rem, width: 9 * rem
@@ -128,31 +159,25 @@ class EditionMainScreen extends React.Component<IProps, IState> {
               >
                 <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 1.5 * rem }}>Salir</Text>
               </View>
-            </TouchableHighlight>
+            </TouchableHighlight> */}
           </View>
         </View>
         {/* Body */}
         <View style={{ display: 'flex', flexDirection: 'row', height: '85%' }}>
-          {/* Main left Picto options */}
-          <View style={[styles.container]}>
-            {this.loadPictos(this.state.leftPictos)}
-          </View>
-          {/* Main Picto actions */}
+          {/* Main Categories options */}
           <View style={[styles.centerPicto]}>
-            {this.loadPictos(this.mostUsedPictos())}
+            {this.loadPictos(this.state.shownCategories)}
           </View>
-          {/* Main right Picto options */}
+          {/* Right Categories options */}
           <View style={[styles.container]}>
-            {this.loadPictos(this.state.rightPictos)}
+            {this.loadPictos(rightCategory)}
           </View>
           <EditDetail
             isBottomModalVisible={this.state.modalVisible}
             setVisibility={this.setModalVisible}
-            picto={this.state.selectedPicto}
+            picto={this.state.selectedCategory}
             categories={this.state.categories}
             allPictos={this.state.pictos}
-            leftPictos={this.props.pictos.leftPictos}
-            rightPictos={this.props.pictos.rightPictos}
           ></EditDetail>
         </View>
       </View>
@@ -171,7 +196,7 @@ class EditionMainScreen extends React.Component<IProps, IState> {
 }
 
 
-EditionMainScreen.navigationOptions = {
+EditionCategoriesScreen.navigationOptions = {
   header: null,
   gesturesEnabled: false
 };
@@ -183,7 +208,6 @@ const heightCoef = deviceHeight < 400 ? 0.65 : 0.85
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center'
   },
   picto: {
@@ -199,24 +223,21 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 3,
     margin: 1,
-    paddingRight: 1
+    // paddingRight: 1,
+    maxHeight: '33%'
   },
   pictoText: {
     textAlign: 'center',
     fontWeight: '600',
     fontSize: 20,
     backgroundColor: 'white',
-    width: deviceWidth / 5.4
+    width: deviceWidth / 5.45
   },
   centerPicto: {
-    flex: 1,
     flexWrap: 'wrap',
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  fixedPicto: {
-    borderColor: 'forestgreen'
+    flex: 1,
+    marginLeft: 10
   }
 });
 
@@ -234,4 +255,4 @@ const mapDispatchToProps = dispatch => (
   }, dispatch)
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditionMainScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(EditionCategoriesScreen);

@@ -15,4 +15,7 @@ export const removeLastPicto = () => {
     return { type: 'REMOVE_LAST'}
 }
 
+export const resetApp = () => {
+    return { type: 'RESET'}
+}
 
