@@ -111,7 +111,7 @@ class EditionMainScreen extends React.Component<IProps, IState> {
           {/* Top bar */}
           <View style={{ backgroundColor: 'white', height: '80%', display: 'flex', flexDirection: 'row', paddingStart: 2, alignItems: 'center' }}>
             <Text style={{ marginLeft: 15, fontSize: 2.5 * rem, color: 'darkblue', fontWeight: 'bold' }}>Modo Edición</Text>
-            <TouchableHighlight style={{ marginLeft: 'auto', marginRight: 10 }} onPress={() => this.props.navigation.navigate('AddScreen', { additionType: 'picto' })}>
+            <TouchableHighlight style={{ marginLeft: 'auto', marginRight: 10 }} onPress={() => this.props.navigation.navigate('AddScreen', { state: this.state })}>
               <View style={{
                 backgroundColor: 'green', alignItems: 'center',
                 justifyContent: 'center', borderRadius: 15, height: 3 * rem, width: 9 * rem
@@ -153,6 +153,7 @@ class EditionMainScreen extends React.Component<IProps, IState> {
             allPictos={this.state.pictos}
             leftPictos={this.props.pictos.leftPictos}
             rightPictos={this.props.pictos.rightPictos}
+            navigation={this.props.navigation}
           ></EditDetail>
         </View>
       </View>

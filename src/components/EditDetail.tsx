@@ -22,6 +22,7 @@ import EditBottomModal from './EditBottomModal'
 import { TextInput } from 'react-native-gesture-handler';
 
 interface IProps {
+    navigation: any,
     isBottomModalVisible: boolean,
     setVisibility: Function,
     picto: Pictogram,
@@ -86,7 +87,6 @@ export default class EditDetail extends React.Component<IProps, IState> {
     }
 
     audioOption = async (opt) => {
-        console.log('La opción elegida para audio es ' + opt)
         const options = {
             type: 'audio/*'
         }
@@ -187,7 +187,11 @@ export default class EditDetail extends React.Component<IProps, IState> {
                                 <View style={this.props.picto.category === undefined ?
                                     { display: 'none' } :
                                     { width: '100%', alignItems: 'center' }}>
-                                    <TouchableHighlight style={[styles.optionButton, this.isFixedPicto()]}>
+                                    <TouchableHighlight style={[styles.optionButton, this.isFixedPicto()]}
+                                        onPress={() => {
+                                            this.props.setVisibility(false)
+                                            this.props.navigation.navigate('EditReplace', {picto: this.props.picto})
+                                        }}>
                                         <Text style={styles.optionBtnText}> Cambiar pictograma </Text>
                                     </TouchableHighlight>
                                     <View style={{ display: this.props.picto !== undefined ? 'flex' : 'none', flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
@@ -215,7 +219,6 @@ export default class EditDetail extends React.Component<IProps, IState> {
                             <TouchableHighlight
                                 style={{ marginLeft: 'auto', marginRight: 10, height: 30 }}
                                 onPress={() => {
-                                    console.log(this.props.picto)
                                     this.props.setVisibility(!this.props.isBottomModalVisible);
                                 }}>
                                 <Text style={styles.pictoText}>Cerrar</Text>
@@ -254,12 +257,11 @@ export default class EditDetail extends React.Component<IProps, IState> {
     isFixedPicto(): import("react-native").StyleProp<import("react-native").ViewStyle> {
         let fixedPictos = this.state.leftPictos.concat(this.state.rightPictos)
         let picto = fixedPictos.find(item => {
-            if(this.props.picto.text === item.text && this.props.picto.img === item.img && this.props.picto.sound === item.sound){
+            if (this.props.picto.text === item.text && this.props.picto.img === item.img && this.props.picto.sound === item.sound) {
                 return true
             }
             return false
         })
-        console.log('PICTO FIXED?', picto)
         if (picto !== undefined) {
             return { display: 'flex' }
         }
@@ -270,7 +272,6 @@ export default class EditDetail extends React.Component<IProps, IState> {
             alert('El texto tiene que contener más de tres caracteres')
             return
         }
-        console.log('CATEGORÍA', this.props.picto)
         if (this.props.picto.category === undefined) {
             this.props.allPictos.map(item => {
                 if (item.category === this.props.picto.text) {

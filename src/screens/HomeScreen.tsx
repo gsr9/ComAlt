@@ -35,7 +35,6 @@ interface IProps {
 
 
 /*export default*/ class HomeScreen extends React.Component<IProps, IState> {
-
   static navigationOptions: { header: any, gesturesEnabled: boolean };
 
   constructor(props: any) {
@@ -52,6 +51,11 @@ interface IProps {
   }
   componentWillUnmount() {
     console.log('CERRANDO HOMESCREEN')
+  }
+
+  exitMode = (item: Pictogram) => {
+    
+    return item.text === this.state.rightPictos[1].text ? this.props.navigation.navigate('SelectMode') : ''
   }
 
   addWord = async (picto) => {
@@ -132,7 +136,7 @@ interface IProps {
       array.push(
         <TouchableHighlight key={item.text} onPress={() => this.addWord(item)} 
           style={[styles.mainBorder, arrayPictos.length < 4 ?  styles.fixedPicto : {}]} underlayColor="rgba(200,200,200,0.5)"
-          onLongPress={() => item.text === 'No' ? this.props.navigation.navigate('SelectMode') : ''}
+          onLongPress={() => this.exitMode(item)}
         >
           <View>
             <View style={styles.picto}>
@@ -147,7 +151,6 @@ interface IProps {
   }
 
   mostUsedPictos = () => {
-
     let array = this.state.pictos.sort((a, b) => Math.round((b.timesUsed - a.timesUsed) / a.timesUsed))
     array = array.slice(0, 9)
     return array;

@@ -76,7 +76,7 @@ const pictograms = [
     img: require('./images/pictos/alimentos/helado.png'),
     sound: require('./sounds/alimentos/helado.mp3'),
     category: 'Alimentos',
-    timesUsed: 10
+    timesUsed: 0
   },
   {
     text: 'Lentejas',
@@ -226,14 +226,14 @@ const pictograms = [
     img: require('./images/pictos/verbos/bañar.png'),
     sound: require('./sounds/verbos/bañar.mp3'),
     category: 'Verbos',
-    timesUsed: 0
+    timesUsed: 10
   },
   {
     text: 'Beber',
     img: require('./images/pictos/verbos/beber.png'),
     sound: require('./sounds/verbos/beber.mp3'),
     category: 'Verbos',
-    timesUsed: 0
+    timesUsed: 10
   },
   {
     text: 'Besar',
@@ -254,14 +254,14 @@ const pictograms = [
     img: require('./images/pictos/verbos/comer.png'),
     sound: require('./sounds/verbos/comer.mp3'),
     category: 'Verbos',
-    timesUsed: 0
+    timesUsed: 10
   },
   {
     text: 'Dormir',
     img: require('./images/pictos/verbos/dormir.png'),
     sound: require('./sounds/verbos/dormir.mp3'),
     category: 'Verbos',
-    timesUsed: 0
+    timesUsed: 10
   },
   
   {
@@ -269,7 +269,7 @@ const pictograms = [
     img: require('./images/pictos/verbos/escuchar_musica.png'),
     sound: require('./sounds/verbos/escuchar_musica.mp3'),
     category: 'Verbos',
-    timesUsed: 0
+    timesUsed: 10
   },
   {
     text: 'Ir',

@@ -73,7 +73,6 @@ class CategoryScreen extends React.Component<IProps, IState> {
     this.props.addPressPicto(picto)
     let actualPicto = this.props.pictos.pictos.find((item: Pictogram) => item.text === picto.text)
     if (actualPicto !== undefined && actualPicto.timesUsed !== undefined) {
-      console.log('ACTUAL PICTO', actualPicto)
       actualPicto.timesUsed += 1;
     }
     this.setState(this.props.pictos)

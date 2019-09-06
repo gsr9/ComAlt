@@ -7,6 +7,7 @@ import EditionMainScreen from '../screens/EditionMainScreen';
 import EditionAddScreen from '../screens/EditionAddScreen';
 import EditionCategoriesScreen from '../screens/EditionCategoriesScreen';
 import EditionCategoryScreen from '../screens/EditionCategoryScreen';
+import EditionReplaceScreen from '../screens/EditionReplaceScreen';
 
 export default createAppContainer(
   // createSwitchNavigator({
@@ -23,6 +24,7 @@ export default createAppContainer(
     EditionMain: EditionMainScreen,
     AddScreen: EditionAddScreen,
     EditCategories: EditionCategoriesScreen,
-    EditCategory: EditionCategoryScreen
+    EditCategory: EditionCategoryScreen,
+    EditReplace: EditionReplaceScreen
   })
 );

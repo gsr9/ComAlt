@@ -158,6 +158,7 @@ class EditionCategoryScreen extends React.Component<IProps, IState> {
                         picto={this.state.selectedPicto}
                         categories={this.state.categories}
                         allPictos={this.state.pictos}
+                        navigation={this.props.navigation}
                     ></EditDetail>
                 </View>
             </View>

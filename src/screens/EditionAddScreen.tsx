@@ -49,6 +49,8 @@ class EditionAddScreen extends React.Component<IProps, IState> {
 
   static navigationOptions: { header: any, gesturesEnabled: boolean };
 
+  stateStorage: any
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -61,6 +63,8 @@ class EditionAddScreen extends React.Component<IProps, IState> {
       newPicto: new Pictogram(),
       type: 'picto'
     }
+    this.stateStorage = props.navigation.state.params.state;
+
   }
 
   shortAsync = (time) => {
@@ -95,7 +99,6 @@ class EditionAddScreen extends React.Component<IProps, IState> {
   }
 
   audioOption = async (opt) => {
-    console.log('La opción elegida para audio es ' + opt)
     const options = {
       type: 'audio/*'
     }
@@ -169,14 +172,14 @@ class EditionAddScreen extends React.Component<IProps, IState> {
         <View style={{ height: '15%', display: 'flex', justifyContent: 'center' }}>
           {/* Top bar */}
           <View style={{ backgroundColor: 'white', height: '80%', display: 'flex', flexDirection: 'row', paddingStart: 2, alignItems: 'center' }}>
-            <Text style={{ marginLeft: 15, fontSize: 2.5 * rem, color: 'darkblue', fontWeight: 'bold' }}>Añadiendo {this.state.type === 'picto' ? 'pictograma':'categoría'}</Text>
+            <Text style={{ marginLeft: 15, fontSize: 2.5 * rem, color: 'darkblue', fontWeight: 'bold' }}>Añadiendo {this.state.type === 'picto' ? 'pictograma' : 'categoría'}</Text>
             <TouchableHighlight style={{ marginLeft: 'auto' }}
               onPress={() => this.addNewPicto()}>
               <View style={{
                 alignItems: 'center', backgroundColor: 'green', marginRight: 10,
                 justifyContent: 'center', borderRadius: 15, height: 3 * rem
               }}>
-                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 1.5 * rem }}> Guardar {this.state.type === 'picto' ? 'pictograma':'categoría'} </Text>
+                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 1.5 * rem }}> Guardar {this.state.type === 'picto' ? 'pictograma' : 'categoría'} </Text>
               </View>
             </TouchableHighlight>
             <TouchableHighlight style={{ marginRight: 10 }} onPress={() => this.props.navigation.goBack()}>
@@ -272,27 +275,37 @@ class EditionAddScreen extends React.Component<IProps, IState> {
   }
   addNewPicto = () => {
     let msg = ''
+    if (this.state.newPicto.category === undefined) {
+      this.state.newPicto.category = 'General'
+    }
     if (this.state.type === 'picto') {
       this.state.newPicto.timesUsed = 0;
       this.props.pictos.pictos.push(this.state.newPicto)
+      // this.stateStorage.pictos.push(this.state.newPicto)
       msg = 'Pictograma añadido correctamente'
-    } else{
-      this.props.pictos.categories.push(
-        {
-          text: this.state.newPicto.text,
-          img: this.state.newPicto.img,
-          sound: this.state.newPicto.sound
-        })
-        msg = 'Categoría añadida correctamente'
+    } else {
+      let newCategory = {
+        text: this.state.newPicto.text,
+        img: this.state.newPicto.img,
+        sound: this.state.newPicto.sound
+      }
+      this.props.pictos.categories.push(newCategory)
+      // this.stateStorage.pictos.push(newCategory)
+      msg = 'Categoría añadida correctamente'
     }
     Alert.alert(
       'Acción completada',
       msg,
       [
-        {text: 'Seguir editando', onPress: () => this.props.navigation.navigate('EditionMain', this.props)},
-        {text: 'Ir al modo usuario', onPress: () => this.props.navigation.navigate('Home')},
+        { text: 'Seguir editando', onPress: () => this.props.navigation.navigate('EditionMain', this.props) },
+        {
+          text: 'Ir al modo usuario', onPress: async () => {
+            await AsyncStorage.setItem('state', JSON.stringify(this.stateStorage));
+            this.props.navigation.navigate('Home')
+          }
+        },
       ],
-      {cancelable: false}
+      { cancelable: false }
     );
   }
   closeEditMode = async () => {
