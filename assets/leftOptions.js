@@ -1,22 +1,22 @@
 leftPictos = [
   {
-    img: require("./images/pictos/quiero.png"),
+    img: require("./images/pictos/verbos/quiero.png"),
     text: "Quiero",
-    sound: require('./sounds/quiero.mp3'),
+    sound: require('./sounds/verbos/quiero.mp3'),
     category: 'Left',
     timesUsed: 0
   },
   {
-    img: require("./images/pictos/no_quiero.png"),
+    img: require("./images/pictos/verbos/no_quiero.png"),
     text: "No quiero",
-    sound: require('./sounds/no_quiero.mp3'),
+    sound: require('./sounds/verbos/no_quiero.mp3'),
     category: 'Left',
     timesUsed: 0
   },
   {
-    img: require("./images/pictos/llamar.png"),
+    img: require("./images/pictos/verbos/llamar2.png"),
     text: "Llamar",
-    sound: require('./sounds/llamar.mp3'),
+    sound: require('./sounds/verbos/llamar.mp3'),
     category: 'Left',
     timesUsed: 0
   }];

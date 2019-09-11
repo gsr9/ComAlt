@@ -25,6 +25,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Alternative communication project using real images",
+    "githubUrl": "https://github.com/gsr9/ComAlt"
   }
 }

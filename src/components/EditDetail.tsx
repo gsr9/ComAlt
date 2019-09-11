@@ -197,7 +197,7 @@ export default class EditDetail extends React.Component<IProps, IState> {
                                     <View style={{ display: this.props.picto !== undefined ? 'flex' : 'none', flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                                         <Text style={{ fontSize: 2 * rem, marginRight: '1%' }}>Categoría</Text>
                                         <Picker
-                                            selectedValue={this.state.picto.category}
+                                            selectedValue={this.props.picto.category}
                                             mode='dialog'
                                             style={{ width: '39%' }}
                                             onValueChange={(itemValue) => {

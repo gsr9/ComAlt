@@ -60,7 +60,7 @@ class EditionReplaceScreen extends React.Component<IProps, IState> {
         arrayPictos.forEach((item) => {
             array.push(
                 <TouchableHighlight key={item.text} onPress={() => this.selectItem(item)}
-                    style={[styles.mainBorder, item.text === this.state.selectedPicto.text ? { borderColor: 'green', borderWidth: 5 } : {}]} underlayColor="rgba(200,200,200,0.5)"
+                    style={[styles.mainBorder, item.text === this.state.selectedPicto.text ? { borderColor: 'lightgreen', borderWidth: 5 } : {}]} underlayColor="rgba(200,200,200,0.5)"
                 >
                     <View>
                         <View style={styles.picto}>

@@ -57,8 +57,7 @@ const dataReducer = (state = initialState, action) => {
             state.topBarText.splice(state.topBarText.length - 1, 1)
             return state;
         case 'RESET':
-            AsyncStorage.clear()
-            state = {
+            let resetedState = {
                 pictos: pictograms,
                 leftPictos: leftPictos,
                 rightPictos: rightPictos,
@@ -66,6 +65,8 @@ const dataReducer = (state = initialState, action) => {
                 topBarText: [],
                 error: false
             }
+            AsyncStorage.setItem('state', JSON.stringify(resetedState))
+            return resetedState;
         default:
             return state
     }

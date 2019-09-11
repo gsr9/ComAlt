@@ -59,7 +59,7 @@ class SelectModeScreen extends React.Component<IProps, IState> {
                         <Text style={{ marginLeft: 15, fontSize: 2.5 * rem, color: 'white', fontWeight: 'bold' }} numberOfLines={1}>{'Selección de modo'}</Text>
                         <TouchableHighlight style={{ marginLeft: 'auto', marginRight: 10 }} onPress={() => this.resetApp()}>
                             <View style={{
-                                backgroundColor: 'darkgrey',borderColor: 'grey', borderWidth: 2, alignItems: 'center',
+                                backgroundColor: 'darkgrey', borderColor: 'grey', borderWidth: 2, alignItems: 'center',
                                 justifyContent: 'center', borderRadius: 15, height: 3 * rem, width: 11 * rem
                             }}
                             >
@@ -98,7 +98,6 @@ class SelectModeScreen extends React.Component<IProps, IState> {
                 { text: 'Cancelar', style: 'cancel' },
                 {
                     text: 'Reestablecer la aplicación', onPress: () => {
-                        // AsyncStorage.clear()
                         this.props.resetApp()
                     }
                 },
@@ -157,12 +156,12 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     const { pictos } = state
     return { pictos }
-  };
-  
-  const mapDispatchToProps = dispatch => (
+};
+
+const mapDispatchToProps = dispatch => (
     bindActionCreators({
-      resetApp
+        resetApp
     }, dispatch)
-  );
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(SelectModeScreen);
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(SelectModeScreen);

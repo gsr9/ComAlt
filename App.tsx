@@ -27,7 +27,7 @@ export default function App(props) {
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" hidden={true} />}
+          <StatusBar barStyle="default" hidden />
           <AppNavigator />
         </View>
       </Provider>

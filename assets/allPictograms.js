@@ -222,6 +222,27 @@ const pictograms = [
   },
   // Verbos
   {
+    text: 'Quiero',
+    img: require('./images/pictos/verbos/quiero.png'),
+    sound: require('./sounds/verbos/quiero.mp3'),
+    category: 'Verbos',
+    timesUsed: 0
+  },
+  {
+    text: 'No quiero',
+    img: require('./images/pictos/verbos/no_quiero.png'),
+    sound: require('./sounds/verbos/no_quiero.mp3'),
+    category: 'Verbos',
+    timesUsed: 0
+  },
+  {
+    text: 'Llamar ',
+    img: require('./images/pictos/verbos/llamar.png'),
+    sound: require('./sounds/verbos/llamar.mp3'),
+    category: 'Verbos',
+    timesUsed: 0
+  },
+  {
     text: 'Bañar',
     img: require('./images/pictos/verbos/bañar.png'),
     sound: require('./sounds/verbos/bañar.mp3'),
@@ -336,6 +357,20 @@ const pictograms = [
     timesUsed: 0
   },
   // General
+  {
+    text: 'Si',
+    img: require('./images/pictos/general/si.png'),
+    sound: require('./sounds/general/si.mp3'),
+    category: 'General',
+    timesUsed: 0
+  },
+  {
+    text: 'No',
+    img: require('./images/pictos/general/no.png'),
+    sound: require('./sounds/general/no.mp3'),
+    category: 'General',
+    timesUsed: 0
+  },
   // Personas
   {
     text: 'Abuela',
